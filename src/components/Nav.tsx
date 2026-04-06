@@ -1,0 +1,169 @@
+import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+
+const links = ['Work', 'About', 'Contact']
+
+export default function Nav() {
+  const [visible, setVisible] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 200)
+    return () => clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
+  const scrollTo = (id: string) => {
+    setMenuOpen(false)
+    setTimeout(() => {
+      document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })
+    }, 300)
+  }
+
+  return (
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50" style={{ backgroundColor: '#4B0507', borderBottom: '1px solid rgba(75,5,7,0.6)', boxShadow: '0 8px 16px rgba(0,0,0,0.3)' }}>
+
+        {/* Nav content — cream text works on both transparent-dark and maroon */}
+        <div
+          className="relative flex items-center justify-between mx-5 sm:mx-8 md:mx-16 py-4 md:py-5"
+          style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.8s ease' }}
+        >
+          {/* Logo and text group */}
+          <div className="flex items-center gap-0">
+            {/* Logo */}
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="z-10 flex-shrink-0"
+              aria-label="Framed home"
+            >
+              <img
+                src="/framed-logo-cream.png"
+                alt="Framed"
+                className="w-8 h-8 md:w-9 md:h-9 object-contain"
+              />
+            </button>
+
+            {/* Framed text */}
+            <span
+              className="font-display text-lg md:text-xl uppercase font-light"
+              style={{
+                letterSpacing: '0.22em',
+                color: '#F5EFE0',
+                marginLeft: '30px',
+              }}
+            >
+              Framed
+            </span>
+          </div>
+
+          {/* Desktop nav — centered */}
+          <nav className="hidden md:flex items-center gap-10 absolute left-1/2 transform -translate-x-1/2" style={{ marginLeft: '15px' }}>
+            {links.map(link => (
+              <button
+                key={link}
+                onClick={() => scrollTo(link)}
+                className="relative font-display text-sm tracking-widest uppercase group"
+                style={{ color: '#F5EFE0' }}
+              >
+                {link}
+                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-cream/60 transition-all duration-300 group-hover:w-full" />
+              </button>
+            ))}
+          </nav>
+
+          {/* Desktop CTA */}
+          <a
+            href="mailto:framed.adl@gmail.com"
+            className="hidden md:block font-display text-sm tracking-widest uppercase px-5 py-2.5 transition-colors duration-300 ml-auto"
+            style={{
+              border: '1px solid rgba(245,239,224,0.3)',
+              color: '#F5EFE0',
+            }}
+          >
+            Email us
+          </a>
+
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden z-10 flex flex-col justify-center items-end gap-1.5 w-8 h-8"
+            onClick={() => setMenuOpen(o => !o)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          >
+            <motion.span
+              className="block h-px w-6 origin-center"
+              style={{ backgroundColor: '#F5EFE0' }}
+              animate={menuOpen ? { rotate: 45, y: 4 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+            <motion.span
+              className="block h-px origin-center"
+              style={{ backgroundColor: '#F5EFE0', width: menuOpen ? 24 : 16 }}
+              animate={menuOpen ? { rotate: -45, y: -4, width: 24 } : { rotate: 0, y: 0, width: 16 }}
+              transition={{ duration: 0.3 }}
+            />
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile full-screen menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            className="fixed inset-0 z-40 flex flex-col justify-between px-6 pb-12 pt-28"
+            style={{ backgroundColor: '#4B0507' }}
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+          >
+            <nav className="flex flex-col gap-2 mt-8">
+              {links.map((link, i) => (
+                <motion.button
+                  key={link}
+                  onClick={() => scrollTo(link)}
+                  className="text-left font-display font-light text-cream border-b border-cream/10 py-5"
+                  style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)' }}
+                  initial={{ opacity: 0, x: -24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: 0.15 + i * 0.08 }}
+                >
+                  {link}
+                </motion.button>
+              ))}
+            </nav>
+
+            <motion.div
+              className="flex items-end justify-between"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.45 }}
+            >
+              <div>
+                <p className="font-display text-sm text-cream/30 tracking-wider mb-2">Get in touch</p>
+                <a
+                  href="mailto:framed.adl@gmail.com"
+                  className="font-display text-base text-cream/70 hover:text-cream transition-colors"
+                >
+                  framed.adl@gmail.com
+                </a>
+              </div>
+              <div className="flex gap-5">
+                <a href="https://instagram.com/framed.adl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-display text-sm tracking-widest uppercase text-cream/25 hover:text-cream/60 transition-colors">
+                  IG
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}
