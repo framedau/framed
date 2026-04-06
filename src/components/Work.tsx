@@ -10,7 +10,7 @@ const projects = [
     tags: ['Wedding', 'Highlight'],
     aspect: 'square',
     color: '#1A0505',
-    thumbnail: '/thumbnail%201.JPEG',
+    thumbnail: '/Jese%26Edlene.JPEG',
     link: 'https://www.youtube.com/watch?v=EHXbyWfgUEg',
   },
   {
